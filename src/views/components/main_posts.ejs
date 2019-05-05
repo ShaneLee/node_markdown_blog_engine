@@ -1,0 +1,10 @@
+<div class="text-center mb-4">
+  <h1 class="h3 mb-3 font-weight-normal">Shane Lee 💭</h1>
+</div>
+
+<% posts.forEach((post) => {%>
+  <div class="post">
+    <h2 class="post_title"><%= post.post_title %></h2>
+    <p class="post_body"><%- post.post_body %></p>
+  </div>
+<% }) %>

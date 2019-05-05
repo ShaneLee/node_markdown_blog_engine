@@ -1,0 +1,33 @@
+body, html {
+  font-family: Georgia, serif;
+}
+
+h2 {
+  font: Georgia, sans-serif;
+  text-align: center;
+  font-size: 4em;
+  font-weight: 900;
+  letter-spacing: .1em;
+  padding: .2em 0 .25em 0;
+}
+
+p {
+  font-size: 1em;
+  color: #000000;
+  font-family: Georgia, "Times New Roman", Times, serif;
+  font-size:1.7em;
+  margin-bottom: 1em;
+  font-weight: normal;
+  line-height: 1.5em;
+}
+
+.container {
+  max-width: 900px; 
+
+}
+
+.post {
+  border-bottom: 3px solid #000000;
+  margin-bottom: 50px;
+  padding-bottom: 25px
+}

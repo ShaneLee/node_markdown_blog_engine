@@ -1,0 +1,23 @@
+<div class="text-center mb-4">
+  <h1 class="h3 mb-3 font-weight-normal">Admin 💭</h1>
+</div>
+
+<form id="new_post" class="form-signin" action="/submit_post" method="POST">
+  <div class="form-label-group">
+    <input type="text" name="post_title" placeholder="Post Title" class="form-control"></input>
+  </div>
+  <br/>
+  <div class="form-label-group">
+    <textarea name="post_body" class="form-control" rows="8" cols="180"></textarea>
+  </div>
+  <br/>
+  <div class="form-label-group">
+    <input type="text" class="form-control" name="category" placeholder="Category" list="category_list" id="category"/>
+  </div>
+  <br />
+  <div class="form-label-group">
+    <input type="text" class="form-control" name="tags" placeholder="Tags" list="category_list"/>
+  </div>
+  <br />
+  <button type="submit" id="new_idea_btn" class="btn btn-lg btn-success btn-block">Submit Post</button>
+</form>
