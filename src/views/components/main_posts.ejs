@@ -5,6 +5,7 @@
 <% posts.forEach((post) => {%>
   <div class="post">
     <h2 class="post_title"><%= post.post_title %></h2>
+    <p class="post_date"><%= post.date_posted %></p>
     <p class="post_body"><%- post.post_body %></p>
   </div>
 <% }) %>

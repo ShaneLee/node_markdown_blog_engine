@@ -19,6 +19,6 @@ app.use(middlewares)
 
 app.use('/', routes)
 
-app.listen(80, () => {
-  console.log(`App running on port 80`)
+app.listen(process.env.PORT, () => {
+  console.log(`App running on port ` + process.env.PORT)
 })

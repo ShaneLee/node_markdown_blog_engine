@@ -2,13 +2,14 @@ body, html {
   font-family: Georgia, serif;
 }
 
-h2 {
+.post_title {
   font: Georgia, sans-serif;
   text-align: center;
-  font-size: 4em;
+  font-size: 3em;
   font-weight: 900;
   letter-spacing: .1em;
   padding: .2em 0 .25em 0;
+  color: #cea525;
 }
 
 p {
@@ -22,12 +23,22 @@ p {
 }
 
 .container {
-  max-width: 900px; 
+  max-width: 900px;
 
 }
 
 .post {
-  border-bottom: 3px solid #000000;
+  border-top: 1px solid rgba(0, 0, 0, 0.1);
   margin-bottom: 50px;
   padding-bottom: 25px
+}
+
+.post_date {
+  text-align: center;
+  margin-bottom: 20px;
+  font-size: 10px;
+  color: #939393;
+  font-size: italic;
+  text-transform: uppercase;
+  letter-spacing: 1px;
 }
