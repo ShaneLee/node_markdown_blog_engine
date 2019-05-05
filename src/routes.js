@@ -3,9 +3,6 @@ const mysql = require('mysql')
 const router = express.Router()
 require("dotenv").config()
 const showdown = require('showdown')
-const passport = require('passport')
-const jwt = require('jwt-simple')
-const LocalStrategy = require('passport-local').Strategy
 
 const converter = new showdown.Converter()
 const dbConnection = getDBConnection()
@@ -19,18 +16,6 @@ function getDBConnection() {
       database: process.env.DB_NAME
   })
 }
-
-const username = "SHANE"
-const password = "dennis"
-
-passport.use(new LocalStrategy(function(username, password, done) {
-  if (username === process.env.ADMIN
-      && password === process.env.ADMIN_PASSWORD) {
-    done(null, jwt.encode({ username }, process.env.SECRET))
-    return
-  }
-  done(null, false)
-}))
 
 router.get("/", (req, res) => {
   const queryString = "SELECT * FROM posts ORDER BY post_id DESC"
@@ -65,29 +50,22 @@ router.get("/posts/:id", (req, res) => {
   })
 })
 
-router.post("/submit_post",
-  passport.authenticate('local',{ session: false, failWithError: true }),
-  (req, res) => {
-    post_title = req.body.post_title
-    post_body = req.body.post_body
-    category = req.body.category
-    tags = req.body.tags.split(", ")
+router.post("/submit_post", (req, res) => {
+  post_title = req.body.post_title
+  post_body = req.body.post_body
+  category = req.body.category
+  tags = req.body.tags.split(", ")
 
-    queryString = "INSERT INTO posts (post_title, post_body, category) \
-    VALUES (?, ?, ?)"
-    dbConnection.query(queryString, [post_title, post_body, category], (err, results, field) => {
-      if (err) {
-        console.log("Failed to submit post. " + err)
-        return
-      }
-      console.log("Logged new post " + results)
-    })
-    res.redirect("/")
-})
-
-router.post('/login', passport.authenticate('local',{ session: false }),
-                function(req, res) {
-                res.send("Authenticated")
+  queryString = "INSERT INTO posts (post_title, post_body, category) \
+  VALUES (?, ?, ?)"
+  dbConnection.query(queryString, [post_title, post_body, category], (err, results, field) => {
+    if (err) {
+      console.log("Failed to submit post. " + err)
+      return
+    }
+    console.log("Logged new post " + results)
   })
+  res.redirect("/")
+})
 
 module.exports = router
