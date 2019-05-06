@@ -4,7 +4,8 @@
   "description": "blog engine for shane.lee",
   "main": "server.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev:server": "nodemon --ignore sessions/ server.js"
   },
   "author": "Shane Lee",
   "license": "ISC",
@@ -14,11 +15,15 @@
     "ejs": "^2.6.1",
     "express": "^4.16.4",
     "express-layout": "^0.1.0",
+    "express-session": "^1.16.1",
     "jwt-simple": "^0.5.6",
     "mysql": "^2.17.1",
+    "nodemon": "^1.19.0",
     "passport": "^0.4.0",
     "passport-local": "^1.0.0",
     "path": "^0.12.7",
-    "showdown": "^1.9.0"
+    "session-file-store": "^1.2.0",
+    "showdown": "^1.9.0",
+    "uuid": "^3.3.2"
   }
 }

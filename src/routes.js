@@ -3,6 +3,8 @@ const mysql = require('mysql')
 const router = express.Router()
 require("dotenv").config()
 const showdown = require('showdown')
+const uuid = require('uuid/v4')
+const passport = require('passport')
 
 const converter = new showdown.Converter()
 const dbConnection = getDBConnection()
@@ -18,12 +20,13 @@ function getDBConnection() {
 }
 
 router.get("/", (req, res) => {
+  const uniqueId = uuid()
   const queryString = "SELECT * FROM posts ORDER BY post_id DESC"
   dbConnection.query(queryString, (err, rows, fields) => {
     if (err) {
       console.log("Failed to query for /: " + err)
     }
-    console.log("Getting data from database for /")
+    console.log("Getting data from database for /" + ` unique id: ${uniqueId}`)
     for (let i in rows) {
       rows[i].post_body = converter.makeHtml(rows[i].post_body)
     }
@@ -32,7 +35,30 @@ router.get("/", (req, res) => {
 })
 
 router.get("/admin", (req, res) => {
-  res.render("./pages/admin")
+  if(req.isAuthenticated()) {
+    console.log(`User authenticated? ${req.isAuthenticated()}`)
+    res.render("./pages/admin")
+  } else {
+    res.redirect("/login")
+  }
+
+})
+
+router.get("/login", (req, res) => {
+  console.log(req.sessionID)
+  res.render("./pages/login")
+})
+
+router.post("/login", (req, res, next) => {
+  passport.authenticate('local', (err, user, info) => {
+    if(info) {return res.send(info.message)}
+    if (err) { return next(err) }
+    if (!user) { return res.redirect('/login') }
+    req.login(user, (err) => {
+      if (err) { return next(err); }
+      return res.redirect('/admin')
+    })
+  })(req, res, next)
 })
 
 router.get("/posts/:id", (req, res) => {
