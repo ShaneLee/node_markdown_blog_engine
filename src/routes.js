@@ -19,6 +19,29 @@ function getDBConnection() {
   })
 }
 
+function checkRows(rows) {
+  for (let i in rows) {
+    rows[i].post_body = converter.makeHtml(rows[i].post_body)
+    if (rows[i].tags) {
+      rows[i].tags = rows[i].tags.split(", ")
+    }
+    else {
+      rows[i].tags = []
+    }
+  }
+  return rows
+}
+
+function checkLogged(req) {
+  if (req.isAuthenticated()) {
+    loggedIn = true
+  }
+  else {
+    loggedIn = false
+  }
+  return loggedIn
+}
+
 router.get("/", (req, res) => {
   const uniqueId = uuid()
   const queryString = "SELECT * FROM posts ORDER BY post_id DESC"
@@ -27,10 +50,9 @@ router.get("/", (req, res) => {
       console.log("Failed to query for /: " + err)
     }
     console.log("Getting data from database for /" + ` unique id: ${uniqueId}`)
-    for (let i in rows) {
-      rows[i].post_body = converter.makeHtml(rows[i].post_body)
-    }
-    res.render("index", { posts: rows })
+    rows = checkRows(rows)
+    let loggedIn = checkLogged(req)
+    res.render("index", { posts: rows, admin: loggedIn })
   })
 })
 
@@ -38,10 +60,10 @@ router.get("/admin", (req, res) => {
   if(req.isAuthenticated()) {
     console.log(`User authenticated? ${req.isAuthenticated()}`)
     res.render("./pages/admin")
-  } else {
+  }
+  else {
     res.redirect("/login")
   }
-
 })
 
 router.get("/login", (req, res) => {
@@ -69,10 +91,28 @@ router.get("/posts/:id", (req, res) => {
       console.log("Failed to query for /posts/:id: " + err)
     }
     console.log("Getting data from database for /posts/:id")
-    for (let i in rows) {
-      rows[i].post_body = converter.makeHtml(rows[i].post_body)
+    rows = checkRows(rows)
+    let loggedIn = checkLogged(req)
+    res.render("./pages/posts", { posts: rows, admin: loggedIn })
+  })
+})
+
+router.get("/categories/:category", (req, res) => {
+  const category = req.params.category
+  const queryString = "SELECT * FROM posts WHERE category = ?"
+  dbConnection.query(queryString, [category], (err, rows, fields) => {
+    if (err) {
+      console.log("Failed to query for /categories/:category " + err)
     }
-    res.render("./pages/posts", { posts: rows })
+    console.log("Getting data from database for /categories/:category")
+    rows = checkRows(rows)
+    if (rows.length == 0) {
+      res.render("./pages/404", { error: "Category not found."})
+    }
+    else {
+    let loggedIn = checkLogged(req)
+    res.render("./pages/category", { posts: rows, admin: loggedIn, category: category })
+    }
   })
 })
 
@@ -80,11 +120,11 @@ router.post("/submit_post", (req, res) => {
   post_title = req.body.post_title
   post_body = req.body.post_body
   category = req.body.category
-  tags = req.body.tags.split(", ")
+  tags = req.body.tags
 
-  queryString = "INSERT INTO posts (post_title, post_body, category) \
-  VALUES (?, ?, ?)"
-  dbConnection.query(queryString, [post_title, post_body, category], (err, results, field) => {
+  queryString = "INSERT INTO posts (post_title, post_body, category, tags) \
+  VALUES (?, ?, ?, ?)"
+  dbConnection.query(queryString, [post_title, post_body, category, tags], (err, results, field) => {
     if (err) {
       console.log("Failed to submit post. " + err)
       return

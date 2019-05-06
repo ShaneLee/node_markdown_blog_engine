@@ -13,7 +13,10 @@ const app = express()
 const bodyParser = require('body-parser')
 
 const users = [
-  {id: '2f24vvg', email: 'me@shanel.ee', password: 'password'}
+  {
+    id: process.env.USER_ID, 
+    email: process.env.USER,
+    password: process.env.PASSWORD}
 ]
 
 passport.use(new LocalStrategy(

@@ -2,10 +2,24 @@
   <h1 class="h3 mb-3 font-weight-normal">Shane Lee 💭</h1>
 </div>
 
+<% if (typeof category !== 'undefined') { %>
+  <h2> Category: <%= category %> </h2>
+<% } %>
+
 <% posts.forEach((post) => {%>
   <div class="post">
     <h2 class="post_title"><%= post.post_title %></h2>
     <p class="post_date"><%= post.date_posted %></p>
+    <% if (post.category !== 'undefined') { %>
+      <p class="category">
+        <a href="/categories/<%= post.category %>">Category: <%= post.category %></a>
+      </p>
+    <% } %>
     <p class="post_body"><%- post.post_body %></p>
+    <ul class="tags">
+      <% post.tags.forEach((tag) => {%>
+        <li><%= tag %></li>
+      <% }) %>
+    </ul>
   </div>
 <% }) %>
