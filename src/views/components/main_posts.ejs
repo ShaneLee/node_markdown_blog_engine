@@ -9,6 +9,13 @@
 <% posts.forEach((post) => {%>
   <div class="post">
     <h2 class="post_title"><%= post.post_title %></h2>
+    <% if (loggedIn) {%>
+      <ul class="admin_options">
+        <li><a href="/edit/<%= post.post_id %>">Edit</a></li>
+        <li><a href="/delete/<%= post.post_id %>">Delete</a></li>
+        <li><a href="/hide/<%= post.post_id %>">hide</a></li>
+      </ul>
+    <% } %>
     <p class="post_date"><%= post.date_posted %></p>
     <% if (post.category !== 'undefined') { %>
       <p class="category">

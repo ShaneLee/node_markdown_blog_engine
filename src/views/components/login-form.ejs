@@ -2,6 +2,10 @@
   <h1 class="h3 mb-3 font-weight-normal">Login 💭</h1>
 </div>
 
+<% if (typeof error !== 'undefined') { %>
+  <h2> Error: <%= error %> </h2>
+<% } %>
+
 <form id="new_post" class="form-signin" action="/login" method="POST">
   <div class="form-label-group">
     <input type="text" name="username" placeholder="Login" class="form-control"></input>
