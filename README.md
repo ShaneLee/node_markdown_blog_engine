@@ -9,3 +9,4 @@ Things to add:
 * Edit page
 * Admin options on posts when logged
 * Links for tags
+* Pagination
