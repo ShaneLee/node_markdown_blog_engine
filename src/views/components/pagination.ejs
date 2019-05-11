@@ -1,0 +1,9 @@
+<ul class="pagination">
+  <% for (let i = 0; i < pageInfo.pages; i++) {%>
+    <% if (i == pageInfo.currentPage) { %>
+      <li><a href=""><%= i + 1 %></a></li>
+    <%} else { %>
+      <li><a href="/<%= i %>"><%= i + 1 %></a></li>
+    <%}%>
+  <%}%>
+</ul>

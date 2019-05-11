@@ -7,6 +7,14 @@ const uuid = require('uuid/v4')
 const passport = require('passport')
 
 const converter = new showdown.Converter()
+const POSTS_PER_PAGE = 3
+const POST_COUNT = async function() {
+  getPostCount()
+    .then(function(value) {
+      console.log(value)
+    })
+}
+
 const dbConnection = getDBConnection()
 
 function getDBConnection() {
@@ -17,6 +25,17 @@ function getDBConnection() {
       password: process.env.DB_PASS,
       database: process.env.DB_NAME
   })
+}
+
+async function getPostCount() {
+  const queryString = "SELECT COUNT(post_id) as count FROM posts"
+  dbConnection.query(queryString, (err, rows, fields) => {
+    if (err) {
+      console.log("Failed to query for getPostCount(): " + err)
+    }
+    return rows[0].count
+  })
+  return rows[0].count
 }
 
 function checkRows(rows) {
@@ -43,16 +62,43 @@ function checkLogged(req) {
 }
 
 router.get("/", (req, res) => {
+  const pages = POST_COUNT / POSTS_PER_PAGE
+  const pageInfo = {
+    pages: pages,
+    currentPage: req.params.page
+  }
+
   const uniqueId = uuid()
-  const queryString = "SELECT * FROM posts ORDER BY post_id DESC"
-  dbConnection.query(queryString, (err, rows, fields) => {
+  const queryString = "SELECT * FROM posts ORDER BY post_id DESC LIMIT 0, ?"
+  dbConnection.query(queryString, [POSTS_PER_PAGE], (err, rows, fields) => {
+    if (err) {
+      console.log("Failed to query for /: " + err)
+    }
+    console.log("Getting data from database for /" + ` unique id: ${uniqueId}`)
+    rows = checkRows(rows)
+
+    let loggedIn = checkLogged(req)
+    res.render("index", { pageInfo: pageInfo, posts: rows, admin: loggedIn })
+  })
+})
+
+router.get("/:page", (req, res) => {
+  const pages = POST_COUNT / POSTS_PER_PAGE
+  const pageInfo = {
+    pages: pages,
+    currentPage: req.params.page
+  }
+  const start = req.params.page * POSTS_PER_PAGE
+  const uniqueId = uuid()
+  const queryString = "SELECT * FROM posts ORDER BY post_id DESC LIMIT ?, ?"
+  dbConnection.query(queryString, [start, POSTS_PER_PAGE], (err, rows, fields) => {
     if (err) {
       console.log("Failed to query for /: " + err)
     }
     console.log("Getting data from database for /" + ` unique id: ${uniqueId}`)
     rows = checkRows(rows)
     let loggedIn = checkLogged(req)
-    res.render("index", { posts: rows, admin: loggedIn })
+    res.render("index", { pageInfo: pageInfo, posts: rows, admin: loggedIn })
   })
 })
 
